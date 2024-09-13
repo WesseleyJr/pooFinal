@@ -1,16 +1,22 @@
 package br.com.grupo4.classes;
 
-public class Funcionario {
+import java.time.LocalDate;
+
+import br.com.grupo4.enums.Parentesco;
+
+public class Funcionario extends Pessoa{
 	
     private Double salarioBruto;
     private int dep;
+    private Parentesco parentesco;
 
-    public Funcionario(Double salarioBruto, int dep) {
-        this.salarioBruto = salarioBruto;
-        this.dep = dep;
-    }
+    public Funcionario(String nome, String cpf, LocalDate dataNasc, Double salarioBruto, int dep) {
+		super(nome, cpf, dataNasc);
+		this.salarioBruto = salarioBruto;
+		this.dep = dep;
+	}
 
-    @Override
+	@Override
     public String toString() {
         return "SalarioBruto: " + salarioBruto + "\n INSS: " + calculoINSS() +
                 "\nIR: " + String.format("%.2f", calculoIR()) + "\nSal liq: " + String.format("%.2f", salarioLiquido());
@@ -74,4 +80,22 @@ public class Funcionario {
         return salarioBruto - calculoINSS() - calculoIR();
     }
 
+    private Double totalDependente = 0.;
+    public Double calcularDependentes() {
+    		
+		if (parentesco.FILHO != null) {
+			totalDependente += parentesco.FILHO.getValorDependente();
+
+		} else if (parentesco.SOBRINHO != null) {
+			totalDependente += parentesco.SOBRINHO.getValorDependente();				
+			
+		} else if (parentesco.OUTRO != null) {
+			totalDependente += parentesco.OUTRO.getValorDependente();
+			
+		} else {
+			return null;
+		}
+	
+			return totalDependente;
+	}
 }
