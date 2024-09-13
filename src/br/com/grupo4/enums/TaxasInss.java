@@ -1,27 +1,47 @@
 package br.com.grupo4.enums;
 
 public enum TaxasInss {
-	ALFAIXA01(0.075), 
-	ALFAIXA02(0.09), 
-	ALFAIXA03(0.12), 
-	ALFAIXA04(0.14), 
-	DEFAIXA01(0.0), 
-	DEFAIXA02(21.18),
-	DEFAIXA03(101.18), 
-	DEFAIXA04(181.18);
-
-	public Double taxasIN;
-
-	private TaxasInss(Double taxas) {
-		this.taxasIN = taxas;
+	FAIXA01 (1412., 0.075, 0.),
+	FAIXA02 (2666.68, 0.090, 21.18),
+	FAIXA03 (4000.03, 0.12, 101.18),
+	FAIXA04 (7786.02, 0.14, 181.18);
+	
+	private Double valorMaximo;
+	private Double percentualAliquota;
+	private Double valorDeducao;
+	
+	private TaxasInss(Double valorMaximo, Double percentualAliquota, Double valorDeducao) {
+		this.valorMaximo = valorMaximo;
+		this.percentualAliquota = percentualAliquota;
+		this.valorDeducao = valorDeducao;
 	}
 
-	public Double getTaxas() {
-		return taxasIN;
+	public Double getValorMaximo() {
+		return valorMaximo;
 	}
 
-	public void setTaxas(Double taxas) {
-		this.taxasIN = taxas;
+	public void setValorMaximo(Double valorMaximo) {
+		this.valorMaximo = valorMaximo;
 	}
 
+	public Double getPercentualAliquota() {
+		return percentualAliquota;
+	}
+
+	public void setPercentualAliquota(Double percentualAliquota) {
+		this.percentualAliquota = percentualAliquota;
+	}
+
+	public Double getValorDeducao() {
+		return valorDeducao;
+	}
+
+	public void setValorDeducao(Double valorDeducao) {
+		this.valorDeducao = valorDeducao;
+	}
+	
+	
+	
+	
+	
 }
