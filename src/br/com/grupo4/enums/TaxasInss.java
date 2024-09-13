@@ -2,7 +2,7 @@ package br.com.grupo4.enums;
 
 public enum TaxasInss {
 	FAIXA01 (1412., 0.075, 0.),
-	FAIXA02 (2666.68, 0.090, 21.18),
+	FAIXA02 (2666.68, 0.09, 21.18),
 	FAIXA03 (4000.03, 0.12, 101.18),
 	FAIXA04 (7786.02, 0.14, 181.18);
 	
