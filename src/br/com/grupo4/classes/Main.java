@@ -1,6 +1,14 @@
 package br.com.grupo4.classes;
 
-public class Main {
-	
+import br.com.grupo4.metodos.LeituraImpressao;
 
+public class Main {
+	public static void main(String[] args) {
+		
+		LeituraImpressao.lerArquivo();
+		
+
+	}
+
+	
 }
