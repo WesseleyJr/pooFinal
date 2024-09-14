@@ -1,7 +1,11 @@
 package br.com.grupo4.metodos;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,10 +13,11 @@ import java.util.Scanner;
 
 import br.com.grupo4.classes.Dependente;
 import br.com.grupo4.classes.Funcionario;
+import br.com.grupo4.excecoes.ExcecaoDependente;
 
 public class LeituraImpressao {
 
-	public static void lerArquivo() {
+	public static List<Funcionario> lerArquivo() {
 
 		List<Funcionario> funcionarios = new ArrayList<>();
 		Funcionario funcionarioAtual = null;
@@ -40,8 +45,21 @@ public class LeituraImpressao {
 						funcionarioAtual = new Funcionario(nome, cpf, dataNasc, salarioLiquido);
 					} catch (NumberFormatException e) {
 						String parentesco = dados[3].toUpperCase();
-						Dependente dependente = new Dependente(nome, cpf, dataNasc, parentesco);
-						dependentes.add(dependente);
+						try {
+							Period periodo = Period.between(dataNasc, LocalDate.now());
+							int idade = periodo.getYears();
+							if (idade < 18) {
+								Dependente dependente = new Dependente(nome, cpf, dataNasc, parentesco);
+								dependentes.add(dependente);
+							} else {
+								throw new ExcecaoDependente("Maior de idade não pode!");
+
+							}
+						} catch (ExcecaoDependente e2) {
+							System.err.println(e2.getMessage());
+							System.exit(0);
+						}
+
 					}
 
 				} else {
@@ -60,6 +78,23 @@ public class LeituraImpressao {
 		} catch (Exception e) {
 			System.err.println("Deu ruim");
 		}
+		return funcionarios;
 	}
 
+	public static void arquivoSair(List<Funcionario> funcionarios) {
+		try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter("/home/user/Documentos/saida.csv"));
+			for (Funcionario funcionario : funcionarios) {
+				bw.append(String.format("%s ; %s ; %.2f ; %.2f ; %.2f\n", funcionario.getNome(), funcionario.getCpf(),
+						funcionario.calculoINSS(), funcionario.calculoIR(), funcionario.salarioLiquido()));
+			}
+			System.out.println("Gravando arquivo....");
+			bw.close();
+			System.out.println("Arquivo gravado!!");
+
+		} catch (IOException e) {
+			System.err.println("Deu merda!");
+		}
+
+	}
 }
