@@ -52,11 +52,13 @@ public class LeituraImpressao {
 								Dependente dependente = new Dependente(nome, cpf, dataNasc, parentesco);
 								dependentes.add(dependente);
 							} else {
-								throw new ExcecaoDependente("Maior de idade não pode!");
+								throw new ExcecaoDependente("\tERRO!!");
 
 							}
 						} catch (ExcecaoDependente e2) {
 							System.err.println(e2.getMessage());
+							System.err.println(
+									"O dependente " + nome + " é maior de idade!\nPor favor o remova da lista!");
 							System.exit(0);
 						}
 
@@ -83,7 +85,7 @@ public class LeituraImpressao {
 
 	public static void arquivoSair(List<Funcionario> funcionarios) {
 		try {
-			BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\curso\\saida.csv"));
+			BufferedWriter bw = new BufferedWriter(new FileWriter("/home/user/Downloads/saida.csv"));
 			for (Funcionario funcionario : funcionarios) {
 				funcionario.calculoINSS();
 				funcionario.calculoIR();
