@@ -83,10 +83,12 @@ public class LeituraImpressao {
 
 	public static void arquivoSair(List<Funcionario> funcionarios) {
 		try {
-			BufferedWriter bw = new BufferedWriter(new FileWriter("/home/user/Documentos/saida.csv"));
+			BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\curso\\saida.csv"));
 			for (Funcionario funcionario : funcionarios) {
+				funcionario.calculoINSS();
+				funcionario.calculoIR();
 				bw.append(String.format("%s ; %s ; %.2f ; %.2f ; %.2f\n", funcionario.getNome(), funcionario.getCpf(),
-						funcionario.calculoINSS(), funcionario.calculoIR(), funcionario.salarioLiquido()));
+						funcionario.getInssfinal(), funcionario.getIrfinal(), funcionario.salarioLiquido()));
 			}
 			System.out.println("Gravando arquivo....");
 			bw.close();

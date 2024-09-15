@@ -16,6 +16,8 @@ public class Funcionario extends Pessoa implements Desconto {
 	private TaxasInss taxasInss;
 	private TaxasIr taxasIr;
 	private List<Dependente> dependentes;
+	private Double irfinal = 0.;
+	private Double inssfinal = 0.;
 
 	public Funcionario(String nome, String cpf, LocalDate dataNasc, Double salarioBruto) {
 		super(nome, cpf, dataNasc);
@@ -26,13 +28,14 @@ public class Funcionario extends Pessoa implements Desconto {
 	public Funcionario(String nome, String cpf, LocalDate dataNasc) {
 		super(nome, cpf, dataNasc);
 	}
-	
 
 	@Override
 	public String toString() {
-		return super.toString() + "SalarioBruto: " + salarioBruto + "\n INSS: " + calculoINSS() + "\nIR: "
-				+ String.format("%.2f", calculoIR()) + "\nSal liq: " + String.format("%.2f", salarioLiquido());
+		return "salarioBruto: " + salarioBruto + ", parentesco: " + parentesco + ", taxasInss: " + taxasInss
+				+ ", taxasIr: " + taxasIr + ", dependentes: " + dependentes + ", irfinal: " + irfinal + ", inssfinal: "
+				+ inssfinal;
 	}
+
 	public Double getSalarioBruto() {
 		return salarioBruto;
 	}
@@ -49,78 +52,85 @@ public class Funcionario extends Pessoa implements Desconto {
 		this.dependentes = dependentes;
 	}
 
+	public Double getIrfinal() {
+		return irfinal;
+	}
+
+	public Double getInssfinal() {
+		return inssfinal;
+	}
+
 	@Override
-	public Double calculoINSS() {
+	public void calculoINSS() {
 		if (salarioBruto <= taxasInss.FAIXA01.getValorMaximo()) {
-			return salarioBruto * taxasInss.FAIXA01.getPercentualAliquota() - taxasInss.FAIXA01.getValorDeducao();
+			inssfinal = salarioBruto * taxasInss.FAIXA01.getPercentualAliquota() - taxasInss.FAIXA01.getValorDeducao();
 
 		} else if (salarioBruto <= taxasInss.FAIXA02.getValorMaximo()) {
-			return salarioBruto * taxasInss.FAIXA02.getPercentualAliquota() - taxasInss.FAIXA02.getValorDeducao();
+			inssfinal = salarioBruto * taxasInss.FAIXA02.getPercentualAliquota() - taxasInss.FAIXA02.getValorDeducao();
 
 		} else if (salarioBruto <= taxasInss.FAIXA03.getValorMaximo()) {
-			return salarioBruto * taxasInss.FAIXA03.getPercentualAliquota() - taxasInss.FAIXA03.getValorDeducao();
+			inssfinal = salarioBruto * taxasInss.FAIXA03.getPercentualAliquota() - taxasInss.FAIXA03.getValorDeducao();
 
 		} else if (salarioBruto <= taxasInss.FAIXA04.getValorMaximo()) {
-			return salarioBruto * taxasInss.FAIXA04.getPercentualAliquota() - taxasInss.FAIXA04.getValorDeducao();
+			inssfinal = salarioBruto * taxasInss.FAIXA04.getPercentualAliquota() - taxasInss.FAIXA04.getValorDeducao();
 
 		} else {
-			return salarioBruto * taxasInss.FAIXA04.getPercentualAliquota();
+			inssfinal = salarioBruto * taxasInss.FAIXA04.getPercentualAliquota();
 		}
 	}
-	
+
 	@Override
-	public Double calculoIR() {
-		Double ir = salarioBruto - calcularDependentes() - calculoINSS();
-		Double irTotal;
+	public void calculoIR() {
 
-		if (salarioBruto <= taxasIr.FAIXA01.getValorMaximo()) {
-			irTotal = ir * taxasIr.FAIXA01.getPercentualAliquota() - taxasIr.FAIXA01.getValorDeducao();
+		Double salarioBase = salarioBruto - calcularDependentes() - inssfinal;
 
-		} else if (salarioBruto <= taxasIr.FAIXA02.getValorMaximo()) {
-			irTotal = ir * taxasIr.FAIXA02.getPercentualAliquota() - taxasIr.FAIXA02.getValorDeducao();
+		if (salarioBase <= taxasIr.FAIXA01.getValorMaximo()) {
+			irfinal = (salarioBase * taxasIr.FAIXA01.getPercentualAliquota()) - taxasIr.FAIXA01.getValorDeducao();
 
-		} else if (salarioBruto <= taxasIr.FAIXA03.getValorMaximo()) {
-			irTotal = ir * taxasIr.FAIXA03.getPercentualAliquota() - taxasIr.FAIXA03.getValorDeducao();
+		} else if (salarioBase <= taxasIr.FAIXA02.getValorMaximo()) {
+			irfinal = (salarioBase * taxasIr.FAIXA02.getPercentualAliquota()) - taxasIr.FAIXA02.getValorDeducao();
 
-		} else if (salarioBruto <= taxasIr.FAIXA04.getValorMaximo()) {
-			irTotal = ir * taxasIr.FAIXA04.getPercentualAliquota() - taxasIr.FAIXA04.getValorDeducao();
+		} else if (salarioBase <= taxasIr.FAIXA03.getValorMaximo()) {
+			irfinal = (salarioBase * taxasIr.FAIXA03.getPercentualAliquota()) - taxasIr.FAIXA03.getValorDeducao();
 
-		} else {
-			irTotal = ir * taxasIr.FAIXA05.getPercentualAliquota() - taxasIr.FAIXA05.getValorDeducao();
+		} else if (salarioBase <= taxasIr.FAIXA04.getValorMaximo()) {
+			irfinal = (salarioBase * taxasIr.FAIXA04.getPercentualAliquota()) - taxasIr.FAIXA04.getValorDeducao();
+
+		} else if (salarioBase > taxasIr.FAIXA05.getValorMaximo()) {
+			irfinal = (salarioBase * taxasIr.FAIXA05.getPercentualAliquota()) - taxasIr.FAIXA05.getValorDeducao();
 
 		}
 
-		if (irTotal <= 0) {
-			return irTotal = 0.;
-		} else {
-			return irTotal;
+		if (irfinal <= 0) {
+			irfinal = 0.;
 		}
 
 	}
 
 	public Double salarioLiquido() {
-		return salarioBruto - calculoINSS() - calculoIR();
+		return salarioBruto - inssfinal - irfinal;
 	}
 
-	private Double totalDependente = 0.;
+	public double calcularDependentes() {
+		Double totalDependente = 0.;
 
-	public Double calcularDependentes() {
+		for (Dependente dependente : dependentes) {
 
-		if (parentesco.FILHO != null) {
-			totalDependente += parentesco.FILHO.getValorDependente();
+			if (parentesco.FILHO.getTipoDependente().equals(dependente.getParentesco())) {
+				totalDependente += parentesco.FILHO.getValorDependente();
 
-		} else if (parentesco.SOBRINHO != null) {
-			totalDependente += parentesco.SOBRINHO.getValorDependente();
+			} else if (parentesco.SOBRINHO.getTipoDependente().equals(dependente.getParentesco())) {
+				totalDependente += parentesco.SOBRINHO.getValorDependente();
 
-		} else if (parentesco.OUTRO != null) {
-			totalDependente += parentesco.OUTRO.getValorDependente();
+			} else if (parentesco.OUTRO.getTipoDependente().equals(dependente.getParentesco())) {
+				totalDependente += parentesco.OUTRO.getValorDependente();
 
-		} else {
-			return null;
+			} else {
+				return 0.;
+			}
 		}
 
 		return totalDependente;
+
 	}
 }
-
-
