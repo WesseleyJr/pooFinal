@@ -4,12 +4,16 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
+import javax.swing.JOptionPane;
 
 import br.com.grupo4.classes.Dependente;
 import br.com.grupo4.classes.Funcionario;
@@ -22,16 +26,13 @@ public class LeituraImpressao {
 		List<Funcionario> funcionarios = new ArrayList<>();
 		Funcionario funcionarioAtual = null;
 		List<Dependente> dependentes = new ArrayList<>();
+		new JOptionPane();
 
 		try {
 			DateTimeFormatter dataFormato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-			Scanner leitura = new Scanner(System.in);
-			System.out.println("Digite o nome do arquivo:");
-			String endereco = leitura.next();
-			leitura.close();
+			String endereco = JOptionPane.showInputDialog(null, "Caminho do arquivo");
 
 			Scanner sc = new Scanner(new File(endereco));
-
 			while (sc.hasNext()) {
 				String linha = sc.nextLine();
 				if (!linha.isEmpty()) {
@@ -56,9 +57,7 @@ public class LeituraImpressao {
 
 							}
 						} catch (ExcecaoDependente e2) {
-							System.err.println(e2.getMessage());
-							System.err.println(
-									"O dependente " + nome + " é maior de idade!\nPor favor o remova da lista!");
+							JOptionPane.showInternalMessageDialog(null, "O dependente " + nome + " é maior de idade!\nPor favor o remova da lista!", null, JOptionPane.ERROR_MESSAGE);
 							System.exit(0);
 						}
 
@@ -78,26 +77,27 @@ public class LeituraImpressao {
 			}
 			sc.close();
 		} catch (Exception e) {
-			System.err.println("Deu ruim");
+			JOptionPane.showInternalMessageDialog(null, "Arquivo não encontrado", null, JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
 		}
 		return funcionarios;
 	}
 
 	public static void arquivoSair(List<Funcionario> funcionarios) {
 		try {
-			BufferedWriter bw = new BufferedWriter(new FileWriter("/home/user/Downloads/saida.csv"));
+			String saida = JOptionPane.showInputDialog(null, "nome do arquivo");
+			BufferedWriter bw = new BufferedWriter(new FileWriter("/home/user/Downloads/" + saida +".csv" ));
 			for (Funcionario funcionario : funcionarios) {
 				funcionario.calculoINSS();
 				funcionario.calculoIR();
 				bw.append(String.format("%s ; %s ; %.2f ; %.2f ; %.2f\n", funcionario.getNome(), funcionario.getCpf(),
 						funcionario.getInssfinal(), funcionario.getIrfinal(), funcionario.salarioLiquido()));
 			}
-			System.out.println("Gravando arquivo....");
 			bw.close();
-			System.out.println("Arquivo gravado!!");
+			JOptionPane.showInternalMessageDialog(null, "Arquivo gerado com sucesso na pasta de Downloads");
 
 		} catch (IOException e) {
-			System.err.println("Deu merda!");
+			JOptionPane.showInternalMessageDialog(null, "Arquivo não gerado", null, JOptionPane.ERROR_MESSAGE);
 		}
 
 	}
