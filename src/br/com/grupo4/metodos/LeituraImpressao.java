@@ -86,12 +86,12 @@ public class LeituraImpressao {
 	public static void arquivoSair(List<Funcionario> funcionarios) {
 		try {
 			String saida = JOptionPane.showInputDialog(null, "nome do arquivo");
-			BufferedWriter bw = new BufferedWriter(new FileWriter("/home/user/Downloads/" + saida +".csv" ));
+			BufferedWriter bw = new BufferedWriter(new FileWriter("/curso/" + saida +".csv" ));
 			for (Funcionario funcionario : funcionarios) {
-				funcionario.calculoINSS();
-				funcionario.calculoIR();
-				bw.append(String.format("%s ; %s ; %.2f ; %.2f ; %.2f\n", funcionario.getNome(), funcionario.getCpf(),
-						funcionario.getInssfinal(), funcionario.getIrfinal(), funcionario.salarioLiquido()));
+				funcionario.getInss();
+				funcionario.getIr();
+				bw.append(String.format("%s ; %s ; %.2f ; %.2f ; %.2f ; %.2f\n", funcionario.getNome(), funcionario.getCpf(),
+						funcionario.getInss(), funcionario.getIr(), funcionario.getValeTransporte(), funcionario.getSalarioLiquido()));
 			}
 			bw.close();
 			JOptionPane.showInternalMessageDialog(null, "Arquivo gerado com sucesso na pasta de Downloads");

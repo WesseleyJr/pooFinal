@@ -8,16 +8,18 @@ import br.com.grupo4.enums.Parentesco;
 import br.com.grupo4.enums.TaxasInss;
 import br.com.grupo4.enums.TaxasIr;
 import br.com.grupo4.interfaces.Desconto;
+import br.com.grupo4.metodos.CalculoContas;
 
-public class Funcionario extends Pessoa implements Desconto {
+public class Funcionario extends Pessoa {
 
 	private Double salarioBruto;
 	private Parentesco parentesco;
-	private TaxasInss taxasInss;
-	private TaxasIr taxasIr;
 	private List<Dependente> dependentes;
-	private Double irfinal = 0.;
-	private Double inssfinal = 0.;
+	private Double inss = 0.;
+	private Double ir = 0.;
+	private Double valeTransporte = 0.;
+	private Double salarioLiquido = 0.;
+	private CalculoContas calc = new CalculoContas();
 
 	public Funcionario(String nome, String cpf, LocalDate dataNasc, Double salarioBruto) {
 		super(nome, cpf, dataNasc);
@@ -31,9 +33,7 @@ public class Funcionario extends Pessoa implements Desconto {
 
 	@Override
 	public String toString() {
-		return "salarioBruto: " + salarioBruto + ", parentesco: " + parentesco + ", taxasInss: " + taxasInss
-				+ ", taxasIr: " + taxasIr + ", dependentes: " + dependentes + ", irfinal: " + irfinal + ", inssfinal: "
-				+ inssfinal;
+		return "salarioBruto: " + salarioBruto + ", parentesco: " + parentesco + ", dependentes: " + dependentes;
 	}
 
 	public Double getSalarioBruto() {
@@ -52,63 +52,20 @@ public class Funcionario extends Pessoa implements Desconto {
 		this.dependentes = dependentes;
 	}
 
-	public Double getIrfinal() {
-		return irfinal;
+	public Double getInss() {
+		return inss = calc.calculoINSS(salarioBruto);
 	}
 
-	public Double getInssfinal() {
-		return inssfinal;
+	public Double getIr() {
+		return ir = calc.calculoIR(salarioBruto, calcularDependentes(), inss);
 	}
 
-	@Override
-	public void calculoINSS() {
-		if (salarioBruto <= taxasInss.FAIXA01.getValorMaximo()) {
-			inssfinal = salarioBruto * taxasInss.FAIXA01.getPercentualAliquota() - taxasInss.FAIXA01.getValorDeducao();
-
-		} else if (salarioBruto <= taxasInss.FAIXA02.getValorMaximo()) {
-			inssfinal = salarioBruto * taxasInss.FAIXA02.getPercentualAliquota() - taxasInss.FAIXA02.getValorDeducao();
-
-		} else if (salarioBruto <= taxasInss.FAIXA03.getValorMaximo()) {
-			inssfinal = salarioBruto * taxasInss.FAIXA03.getPercentualAliquota() - taxasInss.FAIXA03.getValorDeducao();
-
-		} else if (salarioBruto <= taxasInss.FAIXA04.getValorMaximo()) {
-			inssfinal = salarioBruto * taxasInss.FAIXA04.getPercentualAliquota() - taxasInss.FAIXA04.getValorDeducao();
-
-		} else {
-			inssfinal = salarioBruto * taxasInss.FAIXA04.getPercentualAliquota();
-		}
+	public Double getValeTransporte() {
+		return valeTransporte = calc.valeTransporte(salarioBruto);
 	}
 
-	@Override
-	public void calculoIR() {
-
-		Double salarioBase = salarioBruto - calcularDependentes() - inssfinal;
-
-		if (salarioBase <= taxasIr.FAIXA01.getValorMaximo()) {
-			irfinal = (salarioBase * taxasIr.FAIXA01.getPercentualAliquota()) - taxasIr.FAIXA01.getValorDeducao();
-
-		} else if (salarioBase <= taxasIr.FAIXA02.getValorMaximo()) {
-			irfinal = (salarioBase * taxasIr.FAIXA02.getPercentualAliquota()) - taxasIr.FAIXA02.getValorDeducao();
-
-		} else if (salarioBase <= taxasIr.FAIXA03.getValorMaximo()) {
-			irfinal = (salarioBase * taxasIr.FAIXA03.getPercentualAliquota()) - taxasIr.FAIXA03.getValorDeducao();
-
-		} else if (salarioBase <= taxasIr.FAIXA04.getValorMaximo()) {
-			irfinal = (salarioBase * taxasIr.FAIXA04.getPercentualAliquota()) - taxasIr.FAIXA04.getValorDeducao();
-
-		} else if (salarioBase > taxasIr.FAIXA05.getValorMaximo()) {
-			irfinal = (salarioBase * taxasIr.FAIXA05.getPercentualAliquota()) - taxasIr.FAIXA05.getValorDeducao();
-
-		}
-
-		if (irfinal <= 0) {
-			irfinal = 0.;
-		}
-
-	}
-
-	public Double salarioLiquido() {
-		return salarioBruto - inssfinal - irfinal;
+	public Double getSalarioLiquido() {
+		return salarioLiquido = calc.salarioLiquido(salarioBruto, inss, ir, valeTransporte);
 	}
 
 	public double calcularDependentes() {
@@ -133,4 +90,5 @@ public class Funcionario extends Pessoa implements Desconto {
 		return totalDependente;
 
 	}
+
 }
