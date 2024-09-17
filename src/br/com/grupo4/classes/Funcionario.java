@@ -18,6 +18,7 @@ public class Funcionario extends Pessoa {
 	private Double inss = 0.;
 	private Double ir = 0.;
 	private Double valeTransporte = 0.;
+	private Double planoDeSaude = 0.;
 	private Double salarioLiquido = 0.;
 	private CalculoContas calc = new CalculoContas();
 
@@ -63,11 +64,16 @@ public class Funcionario extends Pessoa {
 	public Double getValeTransporte() {
 		return valeTransporte = calc.valeTransporte(salarioBruto);
 	}
-
-	public Double getSalarioLiquido() {
-		return salarioLiquido = calc.salarioLiquido(salarioBruto, inss, ir, valeTransporte);
+	
+	public Double getPlanoDeSaude() {
+		
+		return planoDeSaude = calc.planoDeSaude(dependentes.size());
 	}
 
+	public Double getSalarioLiquido() {
+		return salarioLiquido = calc.salarioLiquido(salarioBruto, inss, ir, valeTransporte, planoDeSaude);
+	}
+	
 	public double calcularDependentes() {
 		Double totalDependente = 0.;
 

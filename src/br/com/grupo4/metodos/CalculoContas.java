@@ -12,6 +12,7 @@ public class CalculoContas implements Desconto {
 	private TaxasIr taxasIr;
 	private Double irfinal = 0.;
 	private Double inssfinal = 0.;
+	private final Double VALORPLANO = 200.;
 
 	@Override
 	public String toString() {
@@ -88,8 +89,8 @@ public class CalculoContas implements Desconto {
 
 	}
 
-	public Double salarioLiquido(Double salarioBruto, Double inss, Double ir, Double valeTransporte) {
-		return salarioBruto - inss - ir - valeTransporte;
+	public Double salarioLiquido(Double salarioBruto, Double inss, Double ir, Double valeTransporte, Double planoDeSaude) {
+		return salarioBruto - inss - ir - valeTransporte - planoDeSaude;
 	}
 
 	public Double valeTransporte(Double salarioBruto) {
@@ -103,5 +104,16 @@ public class CalculoContas implements Desconto {
 		}
 
 	}
+
+	@Override
+	public Double planoDeSaude(int numeroDependentes) {
+		
+		Double descontoDependente = numeroDependentes * (VALORPLANO * 0.02);
+		Double descontoPSFuncionario = (VALORPLANO * 0.2) + descontoDependente;
+		 return descontoPSFuncionario;
+		
+		
+	}
+	
 
 }

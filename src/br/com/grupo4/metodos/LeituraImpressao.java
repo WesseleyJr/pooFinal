@@ -18,6 +18,7 @@ import javax.swing.JOptionPane;
 import br.com.grupo4.classes.Dependente;
 import br.com.grupo4.classes.Funcionario;
 import br.com.grupo4.excecoes.ExcecaoDependente;
+import br.com.grupo4.excecoes.ExcecaoPessoa;
 
 public class LeituraImpressao {
 
@@ -41,6 +42,20 @@ public class LeituraImpressao {
 					String nome = dados[0];
 					String cpf = dados[1];
 					LocalDate dataNasc = LocalDate.parse(dados[2], dataFormato);
+					
+					for (Funcionario funcionario : funcionarios) {
+						List<Dependente> dependenteVerificacao = funcionario.getDependentes();
+						
+							if(funcionario.getCpf().equals(cpf)) {
+								throw new ExcecaoPessoa("Erro CPF");
+							}else {
+								for (Dependente dependente : dependenteVerificacao) {
+									if(dependente.getCpf().equals(cpf)) {
+										throw new ExcecaoPessoa("Erro CPF");
+									}
+								}
+							}
+					}
 					try {
 						Double salarioLiquido = Double.parseDouble(dados[3]);
 						funcionarioAtual = new Funcionario(nome, cpf, dataNasc, salarioLiquido);
@@ -76,7 +91,12 @@ public class LeituraImpressao {
 				funcionarios.add(funcionarioAtual);
 			}
 			sc.close();
-		} catch (Exception e) {
+		} 
+		catch (ExcecaoPessoa e) {
+			JOptionPane.showInternalMessageDialog(null, "CPF inválido", null, JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
+			
+		}catch (Exception e) {
 			JOptionPane.showInternalMessageDialog(null, "Arquivo não encontrado", null, JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
 		}
@@ -90,8 +110,8 @@ public class LeituraImpressao {
 			for (Funcionario funcionario : funcionarios) {
 				funcionario.getInss();
 				funcionario.getIr();
-				bw.append(String.format("%s ; %s ; %.2f ; %.2f ; %.2f ; %.2f\n", funcionario.getNome(), funcionario.getCpf(),
-						funcionario.getInss(), funcionario.getIr(), funcionario.getValeTransporte(), funcionario.getSalarioLiquido()));
+				bw.append(String.format("%s ; %s ; %.2f ; %.2f ; %.2f ; %.2f ; %.2f\n", funcionario.getNome(), funcionario.getCpf(),
+						funcionario.getInss(), funcionario.getIr(), funcionario.getValeTransporte(), funcionario.getPlanoDeSaude(), funcionario.getSalarioLiquido()));
 			}
 			bw.close();
 			JOptionPane.showInternalMessageDialog(null, "Arquivo gerado com sucesso na pasta de Downloads");
