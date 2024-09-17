@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import br.com.grupo4.classes.Dependente;
@@ -28,12 +29,14 @@ public class LeituraImpressao {
 		Funcionario funcionarioAtual = null;
 		List<Dependente> dependentes = new ArrayList<>();
 		new JOptionPane();
+		JFileChooser file = new JFileChooser();
 
 		try {
 			DateTimeFormatter dataFormato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-			String endereco = JOptionPane.showInputDialog(null, "Caminho do arquivo");
-
-			Scanner sc = new Scanner(new File(endereco));
+			file.setDialogTitle("Escolha a pasta que esta o arquivo");
+			file.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			int caminho = file.showSaveDialog(null);
+			Scanner sc = new Scanner(file.getSelectedFile());
 			while (sc.hasNext()) {
 				String linha = sc.nextLine();
 				if (!linha.isEmpty()) {
@@ -50,9 +53,9 @@ public class LeituraImpressao {
 						funcionarioAtual = new Funcionario(nome, cpf, dataNasc, salarioLiquido);
 					} catch (NumberFormatException e) {
 						String parentesco = dados[3].toUpperCase();
-						
+
 						verificaIdade(dataNasc, nome);
-						
+
 						Dependente dependente = new Dependente(nome, cpf, dataNasc, parentesco);
 						dependentes.add(dependente);
 					}
@@ -113,12 +116,16 @@ public class LeituraImpressao {
 
 	public static void arquivoSair(List<Funcionario> funcionarios) {
 		try {
-			String saida = JOptionPane.showInputDialog(null, "nome do arquivo");
-			BufferedWriter bw = new BufferedWriter(new FileWriter("C:/Users/luan/Downloads/" + saida + ".csv"));
+			JFileChooser file = new JFileChooser();
+			file.setDialogTitle("Escolha a pasta que o arquivo vai ficar");
+			file.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			int caminho = file.showSaveDialog(null);
+			BufferedWriter bw = new BufferedWriter(new FileWriter(file.getSelectedFile() + ".csv"));
 			for (Funcionario funcionario : funcionarios) {
 				bw.append(String.format("%s ; %s ; %.2f ; %.2f ; %.2f ; %.2f ; %.2f ; %.2f\n", funcionario.getNome(),
 						funcionario.getCpf(), funcionario.getInss(), funcionario.getIr(),
-						funcionario.getValeTransporte(), funcionario.getPlanoDeSaude(), funcionario.getValeRefeicao(), funcionario.getSalarioLiquido()));
+						funcionario.getValeTransporte(), funcionario.getPlanoDeSaude(), funcionario.getValeRefeicao(),
+						funcionario.getSalarioLiquido()));
 			}
 			bw.close();
 			JOptionPane.showInternalMessageDialog(null, "Arquivo gerado com sucesso na pasta de Downloads");
@@ -127,6 +134,20 @@ public class LeituraImpressao {
 			JOptionPane.showInternalMessageDialog(null, "Arquivo não gerado", null, JOptionPane.ERROR_MESSAGE);
 		}
 
+	}
+
+	public static void visualizar(List<Funcionario> funcionarios) {
+		for (Funcionario funcionario : funcionarios) {
+			funcionario.getNome();
+			funcionario.getCpf();
+			funcionario.getInss();
+			funcionario.getIr();
+			funcionario.getValeTransporte();
+			funcionario.getPlanoDeSaude();
+			funcionario.getValeRefeicao();
+			funcionario.getSalarioLiquido();
+		}
+		JOptionPane.showMessageDialog(null, funcionarios, "Pre vizualizar", 1);
 	}
 
 }

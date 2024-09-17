@@ -32,9 +32,7 @@ public class Funcionario extends Pessoa {
 
 	@Override
 	public String toString() {
-		return "Funcionario [salarioBruto=" + salarioBruto + ", dependentes=" + dependentes + ", inss=" + inss + ", ir="
-				+ ir + ", valeTransporte=" + valeTransporte + ", planoDeSaude=" + planoDeSaude + ", salarioLiquido="
-				+ salarioLiquido + ", calculoDescontos=" + calculoDescontos + "]";
+		return String.format("Nome: %s ; CPF: %s ; INSS: %.2f ; IR: %.2f ; Vale transporte: %.2f ; Plano de saude: %.2f ; Vale Refeição: %.2f ; Salario liquido: %.2f\n", nome, cpf, inss, ir, valeTransporte, planoDeSaude, valeRefeicao, salarioLiquido );
 	}
 
 
