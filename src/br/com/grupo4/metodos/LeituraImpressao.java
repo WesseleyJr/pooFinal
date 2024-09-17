@@ -42,40 +42,19 @@ public class LeituraImpressao {
 					String nome = dados[0];
 					String cpf = dados[1];
 					LocalDate dataNasc = LocalDate.parse(dados[2], dataFormato);
-					
-					for (Funcionario funcionario : funcionarios) {
-						List<Dependente> dependenteVerificacao = funcionario.getDependentes();
-						
-							if(funcionario.getCpf().equals(cpf)) {
-								throw new ExcecaoPessoa("Erro CPF");
-							}else {
-								for (Dependente dependente : dependenteVerificacao) {
-									if(dependente.getCpf().equals(cpf)) {
-										throw new ExcecaoPessoa("Erro CPF");
-									}
-								}
-							}
-					}
+
+					verificaCpf(funcionarios, cpf, nome);
+
 					try {
 						Double salarioLiquido = Double.parseDouble(dados[3]);
 						funcionarioAtual = new Funcionario(nome, cpf, dataNasc, salarioLiquido);
 					} catch (NumberFormatException e) {
 						String parentesco = dados[3].toUpperCase();
-						try {
-							Period periodo = Period.between(dataNasc, LocalDate.now());
-							int idade = periodo.getYears();
-							if (idade < 18) {
-								Dependente dependente = new Dependente(nome, cpf, dataNasc, parentesco);
-								dependentes.add(dependente);
-							} else {
-								throw new ExcecaoDependente("\tERRO!!");
-
-							}
-						} catch (ExcecaoDependente e2) {
-							JOptionPane.showInternalMessageDialog(null, "O dependente " + nome + " é maior de idade!\nPor favor o remova da lista!", null, JOptionPane.ERROR_MESSAGE);
-							System.exit(0);
-						}
-
+						
+						verificaIdade(dataNasc, nome);
+						
+						Dependente dependente = new Dependente(nome, cpf, dataNasc, parentesco);
+						dependentes.add(dependente);
 					}
 
 				} else {
@@ -91,27 +70,55 @@ public class LeituraImpressao {
 				funcionarios.add(funcionarioAtual);
 			}
 			sc.close();
-		} 
-		catch (ExcecaoPessoa e) {
-			JOptionPane.showInternalMessageDialog(null, "CPF inválido", null, JOptionPane.ERROR_MESSAGE);
+		} catch (ExcecaoPessoa e1) {
+			JOptionPane.showInternalMessageDialog(null, e1.getMessage() + " Está com CPF invalido", null,
+					JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
-			
-		}catch (Exception e) {
+		} catch (ExcecaoDependente e2) {
+			JOptionPane.showInternalMessageDialog(null,
+					"O dependente " + e2.getMessage() + " é maior de idade!\nPor favor o remova da lista!", null,
+					JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
+		} catch (Exception e) {
 			JOptionPane.showInternalMessageDialog(null, "Arquivo não encontrado", null, JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
 		}
+
 		return funcionarios;
+	}
+
+	public static void verificaCpf(List<Funcionario> funcionarios, String cpf, String nome) {
+		for (Funcionario funcionario : funcionarios) {
+			List<Dependente> dependenteVerificacao = funcionario.getDependentes();
+
+			if (funcionario.getCpf().equals(cpf)) {
+				throw new ExcecaoPessoa(nome);
+			} else {
+				for (Dependente dependente : dependenteVerificacao) {
+					if (dependente.getCpf().equals(cpf)) {
+						throw new ExcecaoPessoa(nome);
+					}
+				}
+			}
+		}
+	}
+
+	public static void verificaIdade(LocalDate dataNasc, String nome) {
+		Period periodo = Period.between(dataNasc, LocalDate.now());
+		int idade = periodo.getYears();
+		if (idade > 18) {
+			throw new ExcecaoDependente(nome);
+		}
 	}
 
 	public static void arquivoSair(List<Funcionario> funcionarios) {
 		try {
 			String saida = JOptionPane.showInputDialog(null, "nome do arquivo");
-			BufferedWriter bw = new BufferedWriter(new FileWriter("/curso/" + saida +".csv" ));
+			BufferedWriter bw = new BufferedWriter(new FileWriter("D:/" + saida + ".csv"));
 			for (Funcionario funcionario : funcionarios) {
-				funcionario.getInss();
-				funcionario.getIr();
-				bw.append(String.format("%s ; %s ; %.2f ; %.2f ; %.2f ; %.2f ; %.2f\n", funcionario.getNome(), funcionario.getCpf(),
-						funcionario.getInss(), funcionario.getIr(), funcionario.getValeTransporte(), funcionario.getPlanoDeSaude(), funcionario.getSalarioLiquido()));
+				bw.append(String.format("%s ; %s ; %.2f ; %.2f ; %.2f ; %.2f ; %.2f\n", funcionario.getNome(),
+						funcionario.getCpf(), funcionario.getInss(), funcionario.getIr(),
+						funcionario.getValeTransporte(), funcionario.getPlanoDeSaude(), funcionario.getSalarioLiquido()));
 			}
 			bw.close();
 			JOptionPane.showInternalMessageDialog(null, "Arquivo gerado com sucesso na pasta de Downloads");
@@ -121,4 +128,5 @@ public class LeituraImpressao {
 		}
 
 	}
+
 }
