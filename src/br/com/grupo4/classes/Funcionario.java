@@ -18,8 +18,10 @@ public class Funcionario extends Pessoa {
 	private Double ir = 0.;
 	private Double valeTransporte = 0.;
 	private Double planoDeSaude = 0.;
+	private Double valeRefeicao = 0.;
 	private Double salarioLiquido = 0.;
 	private CalculoDescontos calculoDescontos = new CalculoDescontos();
+	
 
 	public Funcionario(String nome, String cpf, LocalDate dataNasc, Double salarioBruto) {
 		super(nome, cpf, dataNasc);
@@ -76,8 +78,12 @@ public class Funcionario extends Pessoa {
 		return planoDeSaude = calculoDescontos.planoDeSaude(dependentes.size());
 	}
 
+	public Double getValeRefeicao() {
+		return valeRefeicao = calculoDescontos.valeRefeicao();
+	}
+
 	public Double getSalarioLiquido() {
-		return salarioLiquido = calculoDescontos.salarioLiquido(salarioBruto, inss, ir, valeTransporte, planoDeSaude);
+		return salarioLiquido = calculoDescontos.salarioLiquido(salarioBruto, inss, ir, valeTransporte, planoDeSaude, valeRefeicao);
 	}
 	
 	

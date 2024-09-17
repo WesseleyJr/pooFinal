@@ -8,6 +8,7 @@ import br.com.grupo4.enums.Parentesco;
 import br.com.grupo4.enums.PlanoSaude;
 import br.com.grupo4.enums.TaxasInss;
 import br.com.grupo4.enums.TaxasIr;
+import br.com.grupo4.enums.ValeRefeicao;
 import br.com.grupo4.enums.ValeTransporte;
 import br.com.grupo4.interfaces.Desconto;
 
@@ -18,6 +19,7 @@ public class CalculoDescontos implements Desconto {
 	private PlanoSaude planoSaude;
 	private Parentesco parentesco;
 	private ValeTransporte valeTransporte;
+	private ValeRefeicao valeRefeicao;
 	
 	
 	public Double calcularDependentes(List<Dependente> dependentes) {
@@ -113,9 +115,16 @@ public class CalculoDescontos implements Desconto {
 		return descontoPSFuncionario;
 
 	}
-
-	public Double salarioLiquido(Double salarioBruto, Double inss, Double ir, Double valeTransporte, Double planoDeSaude) {
-		return salarioBruto - inss - ir - valeTransporte - planoDeSaude;
+	
+	public Double valeRefeicao() {
+		int diasTrabalhados = 22;
+		Double total;
+		total = valeRefeicao.CUSTO.getValorDia() * diasTrabalhados;
+		return total * valeRefeicao.CUSTO.getTaxaDesconto();
+	}
+	
+	public Double salarioLiquido(Double salarioBruto, Double inss, Double ir, Double valeTransporte, Double planoDeSaude, Double valeRefeicao) {
+		return salarioBruto - inss - ir - valeTransporte - planoDeSaude - valeRefeicao;
 	}
 
 }
