@@ -127,7 +127,7 @@ public class LeituraImpressao {
 						funcionario.getSalarioLiquido()));
 			}
 			bw.close();
-			JOptionPane.showInternalMessageDialog(null, "Arquivo gerado com sucesso na pasta de Downloads");
+			JOptionPane.showInternalMessageDialog(null, "Arquivo gerado com sucesso");
 
 		} catch (IOException e) {
 			JOptionPane.showInternalMessageDialog(null, "Arquivo não gerado", null, JOptionPane.ERROR_MESSAGE);

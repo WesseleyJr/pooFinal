@@ -17,7 +17,7 @@ public class DependenteDao {
 	}
 	
 	public void inserir(List<Funcionario> funcionarios) {
-		String sql = "INSERT INTO dependentes(nome, cpf, dataNasc, parentesco, id_funcionario) values(?,?,?,?,?)"
+		String sql = "INSERT INTO dependente(nome, cpf, dataNasc, parentesco, id_funcionario) values(?,?,?,?,?)"
 				+ "ON CONFLICT (cpf) DO UPDATE SET nome = EXCLUDED.nome, dataNasc = EXCLUDED.dataNasc,"
 				+ "parentesco = EXCLUDED.parentesco, id_funcionario = EXCLUDED.id_funcionario";
 		try {

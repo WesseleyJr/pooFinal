@@ -20,6 +20,7 @@ public class Funcionario extends Pessoa {
 	private Double planoDeSaude = 0.;
 	private Double valeRefeicao = 0.;
 	private Double salarioLiquido = 0.;
+	private int id;
 	private CalculoDescontos calculoDescontos = new CalculoDescontos();
 	
 
@@ -57,7 +58,18 @@ public class Funcionario extends Pessoa {
 		this.dependentes = dependentes;
 	}
 	
+	public int getId() {
+		return id;
+	}
+	
+	
+	public void setId(int id) {
+		this.id = id;
+	}
+	
 	//Get metodos
+
+
 
 	public Double getInss() {
 		return inss = calculoDescontos.calculoINSS(salarioBruto);
