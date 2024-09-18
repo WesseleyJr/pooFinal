@@ -123,7 +123,7 @@ public class LeituraImpressao {
 			for (Funcionario funcionario : funcionarios) {
 				bw.append(String.format("%s ; %s ; %.2f ; %.2f ; %.2f ; %.2f ; %.2f ; %.2f\n", funcionario.getNome(),
 						funcionario.getCpf(), funcionario.getInss(), funcionario.getIr(),
-						funcionario.getValeTransporte(), funcionario.getPlanoDeSaude(), funcionario.getValeRefeicao(),
+						funcionario.getFgts(), funcionario.getPlanoDeSaude(), funcionario.getValeRefeicao(),
 						funcionario.getSalarioLiquido()));
 			}
 			bw.close();
@@ -141,7 +141,7 @@ public class LeituraImpressao {
 			funcionario.getCpf();
 			funcionario.getInss();
 			funcionario.getIr();
-			funcionario.getValeTransporte();
+			funcionario.getFgts();
 			funcionario.getPlanoDeSaude();
 			funcionario.getValeRefeicao();
 			funcionario.getSalarioLiquido();

@@ -16,12 +16,11 @@ public class Funcionario extends Pessoa {
 	private List<Dependente> dependentes;
 	private Double inss = 0.;
 	private Double ir = 0.;
-	private Double valeTransporte = 0.;
+	private Double fgts = 0.;
 	private Double planoDeSaude = 0.;
 	private Double valeRefeicao = 0.;
 	private Double salarioLiquido = 0.;
 	private CalculoDescontos calculoDescontos = new CalculoDescontos();
-	private int id;
 	
 
 	public Funcionario(String nome, String cpf, LocalDate dataNasc, Double salarioBruto) {
@@ -33,7 +32,7 @@ public class Funcionario extends Pessoa {
 
 	@Override
 	public String toString() {
-		return String.format("Nome: %s ; CPF: %s ; INSS: %.2f ; IR: %.2f ; Vale transporte: %.2f ; Plano de saude: %.2f ; Vale Refeição: %.2f ; Salario liquido: %.2f\n", nome, cpf, inss, ir, valeTransporte, planoDeSaude, valeRefeicao, salarioLiquido );
+		return String.format("Nome: %s ; CPF: %s ; INSS: %.2f ; IR: %.2f ; FGTS: %.2f ; Plano de saude: %.2f ; Vale Refeição: %.2f ; Salario liquido: %.2f\n", nome, cpf, inss, ir, fgts, planoDeSaude, valeRefeicao, salarioLiquido );
 	}
 
 
@@ -58,21 +57,7 @@ public class Funcionario extends Pessoa {
 		this.dependentes = dependentes;
 	}
 	
-	
-	public int getId() {
-		return id;
-	}
-	
-	
-	public void setId(int id) {
-		this.id = id;
-	}
-	
-	
-
 	//Get metodos
-
-
 
 	public Double getInss() {
 		return inss = calculoDescontos.calculoINSS(salarioBruto);
@@ -82,8 +67,8 @@ public class Funcionario extends Pessoa {
 		return ir = calculoDescontos.calculoIR(salarioBruto, calculoDescontos.calcularDependentes(dependentes), inss);
 	}
 
-	public Double getValeTransporte() {
-		return valeTransporte = calculoDescontos.valeTransporte(salarioBruto);
+	public Double getFgts() {
+		return fgts = calculoDescontos.fgts(salarioBruto);
 	}
 	
 	public Double getPlanoDeSaude() {
@@ -96,7 +81,7 @@ public class Funcionario extends Pessoa {
 	}
 
 	public Double getSalarioLiquido() {
-		return salarioLiquido = calculoDescontos.salarioLiquido(salarioBruto, inss, ir, valeTransporte, planoDeSaude, valeRefeicao);
+		return salarioLiquido = calculoDescontos.salarioLiquido(salarioBruto, inss, ir, planoDeSaude, valeRefeicao);
 	}
 	
 	

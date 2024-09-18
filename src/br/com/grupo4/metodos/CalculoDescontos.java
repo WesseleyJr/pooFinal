@@ -9,7 +9,7 @@ import br.com.grupo4.enums.PlanoSaude;
 import br.com.grupo4.enums.TaxasInss;
 import br.com.grupo4.enums.TaxasIr;
 import br.com.grupo4.enums.ValeRefeicao;
-import br.com.grupo4.enums.ValeTransporte;
+import br.com.grupo4.enums.Fgts;
 import br.com.grupo4.interfaces.Desconto;
 
 public class CalculoDescontos implements Desconto {
@@ -18,7 +18,7 @@ public class CalculoDescontos implements Desconto {
 	private TaxasIr taxasIr;
 	private PlanoSaude planoSaude;
 	private Parentesco parentesco;
-	private ValeTransporte valeTransporte;
+	private Fgts fgts;
 	private ValeRefeicao valeRefeicao;
 	
 	
@@ -95,15 +95,10 @@ public class CalculoDescontos implements Desconto {
 
 	}
 	@Override
-	public Double valeTransporte(Double salarioBruto) {
+	public Double fgts(Double salarioBruto) {
 
-		Double vt = salarioBruto * valeTransporte.TAXA.getTaxaVT();
-
-		if (vt > 500) {
-			return vt = 500.;
-		} else {
-			return vt;
-		}
+		Double fgtsTotal = salarioBruto * fgts.TAXA.getTaxaVT();
+		return fgtsTotal;
 
 	}
 
@@ -123,8 +118,8 @@ public class CalculoDescontos implements Desconto {
 		return total * valeRefeicao.CUSTO.getTaxaDesconto();
 	}
 	
-	public Double salarioLiquido(Double salarioBruto, Double inss, Double ir, Double valeTransporte, Double planoDeSaude, Double valeRefeicao) {
-		return salarioBruto - inss - ir - valeTransporte - planoDeSaude - valeRefeicao;
+	public Double salarioLiquido(Double salarioBruto, Double inss, Double ir, Double planoDeSaude, Double valeRefeicao) {
+		return salarioBruto - inss - ir - planoDeSaude - valeRefeicao;
 	}
 
 }

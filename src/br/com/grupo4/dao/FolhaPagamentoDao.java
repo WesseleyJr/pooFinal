@@ -19,7 +19,7 @@ public class FolhaPagamentoDao {
 	}
 
 	public void inserir(List<Funcionario> funcionarios) {
-		String sql = "INSERT INTO Folha_pagamento( inss, ir, valeTransporte, planoSaude, valeRefeicao, salarioLiquido, id_funcionario) values(?,?,?,?,?,?,?)";
+		String sql = "INSERT INTO Folha_pagamento( inss, ir, fgts, planoSaude, valeRefeicao, salarioLiquido, id_funcionario) values(?,?,?,?,?,?,?)";
 
 		try {
 			PreparedStatement stmt = connection.prepareStatement(sql);
@@ -27,7 +27,7 @@ public class FolhaPagamentoDao {
 		
 				stmt.setDouble(1, funcionario.getInss());
 				stmt.setDouble(2, funcionario.getIr());
-				stmt.setDouble(3, funcionario.getValeTransporte());
+				stmt.setDouble(3, funcionario.getFgts());
 				stmt.setDouble(4, funcionario.getPlanoDeSaude());
 				stmt.setDouble(5, funcionario.getValeRefeicao());
 				stmt.setDouble(6, funcionario.getSalarioLiquido());
