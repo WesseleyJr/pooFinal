@@ -20,28 +20,12 @@ public enum TaxasInss {
 		return valorMaximo;
 	}
 
-	public void setValorMaximo(Double valorMaximo) {
-		this.valorMaximo = valorMaximo;
-	}
-
 	public Double getPercentualAliquota() {
 		return percentualAliquota;
-	}
-
-	public void setPercentualAliquota(Double percentualAliquota) {
-		this.percentualAliquota = percentualAliquota;
 	}
 
 	public Double getValorDeducao() {
 		return valorDeducao;
 	}
-
-	public void setValorDeducao(Double valorDeducao) {
-		this.valorDeducao = valorDeducao;
-	}
-	
-	
-	
-	
 	
 }

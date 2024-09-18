@@ -1,9 +1,10 @@
 package br.com.grupo4.classes;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public abstract class Pessoa {
-
+	
 	protected String nome;
 	protected String cpf;
 	protected LocalDate dataNasc;

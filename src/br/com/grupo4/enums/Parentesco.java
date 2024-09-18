@@ -18,16 +18,8 @@ public enum Parentesco {
 		return valorDependente;
 	}
 
-	public void setValorDependente(Double valorDependente) {
-		this.valorDependente = valorDependente;
-	}
-
 	public String getTipoDependente() {
 		return tipoDependente;
-	}
-
-	public void setTipoDependente(String tipoDependente) {
-		this.tipoDependente = tipoDependente;
 	}
 
 }

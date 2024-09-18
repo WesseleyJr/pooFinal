@@ -4,6 +4,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
@@ -11,27 +13,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+
 import br.com.grupo4.classes.Dependente;
 import br.com.grupo4.classes.Funcionario;
 import br.com.grupo4.excecoes.ExcecaoDependente;
+import br.com.grupo4.excecoes.ExcecaoPessoa;
 
 public class LeituraImpressao {
-
 	public static List<Funcionario> lerArquivo() {
 
 		List<Funcionario> funcionarios = new ArrayList<>();
 		Funcionario funcionarioAtual = null;
 		List<Dependente> dependentes = new ArrayList<>();
+		new JOptionPane();
+		JFileChooser file = new JFileChooser();
 
 		try {
 			DateTimeFormatter dataFormato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-			Scanner leitura = new Scanner(System.in);
-			System.out.println("Digite o nome do arquivo:");
-			String endereco = leitura.next();
-			leitura.close();
-
-			Scanner sc = new Scanner(new File(endereco));
-
+			file.setDialogTitle("Escolha a pasta que esta o arquivo");
+			file.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			int caminho = file.showSaveDialog(null);
+			Scanner sc = new Scanner(file.getSelectedFile());
 			while (sc.hasNext()) {
 				String linha = sc.nextLine();
 				if (!linha.isEmpty()) {
@@ -40,28 +44,19 @@ public class LeituraImpressao {
 					String nome = dados[0];
 					String cpf = dados[1];
 					LocalDate dataNasc = LocalDate.parse(dados[2], dataFormato);
+
+					verificaCpf(funcionarios, cpf, nome);
+
 					try {
 						Double salarioLiquido = Double.parseDouble(dados[3]);
 						funcionarioAtual = new Funcionario(nome, cpf, dataNasc, salarioLiquido);
 					} catch (NumberFormatException e) {
 						String parentesco = dados[3].toUpperCase();
-						try {
-							Period periodo = Period.between(dataNasc, LocalDate.now());
-							int idade = periodo.getYears();
-							if (idade < 18) {
-								Dependente dependente = new Dependente(nome, cpf, dataNasc, parentesco);
-								dependentes.add(dependente);
-							} else {
-								throw new ExcecaoDependente("\tERRO!!");
 
-							}
-						} catch (ExcecaoDependente e2) {
-							System.err.println(e2.getMessage());
-							System.err.println(
-									"O dependente " + nome + " é maior de idade!\nPor favor o remova da lista!");
-							System.exit(0);
-						}
+						verificaIdade(dataNasc, nome);
 
+						Dependente dependente = new Dependente(nome, cpf, dataNasc, parentesco);
+						dependentes.add(dependente);
 					}
 
 				} else {
@@ -77,28 +72,81 @@ public class LeituraImpressao {
 				funcionarios.add(funcionarioAtual);
 			}
 			sc.close();
+		} catch (ExcecaoPessoa e1) {
+			JOptionPane.showInternalMessageDialog(null, e1.getMessage() + " Está com CPF invalido", null,
+					JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
+		} catch (ExcecaoDependente e2) {
+			JOptionPane.showInternalMessageDialog(null,
+					"O dependente " + e2.getMessage() + " é maior de idade!\nPor favor o remova da lista!", null,
+					JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
 		} catch (Exception e) {
-			System.err.println("Deu ruim");
+			JOptionPane.showInternalMessageDialog(null, "Arquivo não encontrado", null, JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
 		}
+		
 		return funcionarios;
+	}
+
+	public static void verificaCpf(List<Funcionario> funcionarios, String cpf, String nome) {
+		for (Funcionario funcionario : funcionarios) {
+			List<Dependente> dependenteVerificacao = funcionario.getDependentes();
+
+			if (funcionario.getCpf().equals(cpf)) {
+				throw new ExcecaoPessoa(nome);
+			} else {
+				for (Dependente dependente : dependenteVerificacao) {
+					if (dependente.getCpf().equals(cpf)) {
+						throw new ExcecaoPessoa(nome);
+					}
+				}
+			}
+		}
+	}
+
+	public static void verificaIdade(LocalDate dataNasc, String nome) {
+		Period periodo = Period.between(dataNasc, LocalDate.now());
+		int idade = periodo.getYears();
+		if (idade > 18) {
+			throw new ExcecaoDependente(nome);
+		}
 	}
 
 	public static void arquivoSair(List<Funcionario> funcionarios) {
 		try {
-			BufferedWriter bw = new BufferedWriter(new FileWriter("/home/user/Downloads/saida.csv"));
+			JFileChooser file = new JFileChooser();
+			file.setDialogTitle("Escolha a pasta que o arquivo vai ficar");
+			file.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			int caminho = file.showSaveDialog(null);
+			BufferedWriter bw = new BufferedWriter(new FileWriter(file.getSelectedFile() + ".csv"));
 			for (Funcionario funcionario : funcionarios) {
-				funcionario.calculoINSS();
-				funcionario.calculoIR();
-				bw.append(String.format("%s ; %s ; %.2f ; %.2f ; %.2f\n", funcionario.getNome(), funcionario.getCpf(),
-						funcionario.getInssfinal(), funcionario.getIrfinal(), funcionario.salarioLiquido()));
+				bw.append(String.format("%s ; %s ; %.2f ; %.2f ; %.2f ; %.2f ; %.2f ; %.2f\n", funcionario.getNome(),
+						funcionario.getCpf(), funcionario.getInss(), funcionario.getIr(),
+						funcionario.getFgts(), funcionario.getPlanoDeSaude(), funcionario.getValeRefeicao(),
+						funcionario.getSalarioLiquido()));
 			}
-			System.out.println("Gravando arquivo....");
 			bw.close();
-			System.out.println("Arquivo gravado!!");
+			JOptionPane.showInternalMessageDialog(null, "Arquivo gerado com sucesso");
 
 		} catch (IOException e) {
-			System.err.println("Deu merda!");
+			JOptionPane.showInternalMessageDialog(null, "Arquivo não gerado", null, JOptionPane.ERROR_MESSAGE);
 		}
 
 	}
+
+	public static void visualizar(List<Funcionario> funcionarios) {
+		for (Funcionario funcionario : funcionarios) {
+			funcionario.getNome();
+			funcionario.getCpf();
+			funcionario.getInss();
+			funcionario.getIr();
+			funcionario.getFgts();
+			funcionario.getPlanoDeSaude();
+			funcionario.getValeRefeicao();
+			funcionario.getSalarioLiquido();
+		}
+		JOptionPane.showMessageDialog(null, funcionarios, "Pre vizualizar", 1);
+	}
+
 }
