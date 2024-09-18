@@ -1,7 +1,7 @@
 package br.com.grupo4.enums;
 
 public enum PlanoSaude {
-	CUSTO(200., 0.02);
+	CUSTO(280., 30.);
 	
 	private Double valorPlano;
 	private Double custoDependente;

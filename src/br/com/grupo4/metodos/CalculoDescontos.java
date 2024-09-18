@@ -21,6 +21,7 @@ public class CalculoDescontos implements Desconto {
 	private Fgts fgts;
 	private ValeRefeicao valeRefeicao;
 	private Double totalRefeicao;
+	private Double descontoPlanoSaude;
 	
 	
 	public Double calcularDependentes(List<Dependente> dependentes) {
@@ -105,10 +106,13 @@ public class CalculoDescontos implements Desconto {
 
 	@Override
 	public Double planoDeSaude(int numeroDependentes) {
+		
+		
+		Double valorTotalPlanoSaude =   planoSaude.CUSTO.getValorPlano() + (numeroDependentes * planoSaude.CUSTO.getCustoDependente());
+		descontoPlanoSaude = valorTotalPlanoSaude * 0.3;
+		valorTotalPlanoSaude -= descontoPlanoSaude;
 
-		Double descontoDependente = numeroDependentes * (planoSaude.CUSTO.getValorPlano() * planoSaude.CUSTO.getCustoDependente());
-		Double descontoPSFuncionario = (planoSaude.CUSTO.getValorPlano() * 0.2) + descontoDependente;
-		return descontoPSFuncionario;
+		return valorTotalPlanoSaude;
 
 	}
 	
@@ -121,8 +125,8 @@ public class CalculoDescontos implements Desconto {
 		return total;
 	}
 	
-	public Double salarioLiquido(Double salarioBruto, Double inss, Double ir, Double planoDeSaude) {
-		return salarioBruto - inss - ir - planoDeSaude - totalRefeicao;
+	public Double salarioLiquido(Double salarioBruto, Double inss, Double ir) {
+		return salarioBruto - inss - ir - descontoPlanoSaude - totalRefeicao;
 	}
 
 }

@@ -81,7 +81,7 @@ public class Funcionario extends Pessoa {
 	}
 
 	public Double getSalarioLiquido() {
-		return salarioLiquido = calculoDescontos.salarioLiquido(salarioBruto, inss, ir, planoDeSaude);
+		return salarioLiquido = calculoDescontos.salarioLiquido(salarioBruto, inss, ir);
 	}
 	
 	
