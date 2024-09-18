@@ -20,6 +20,7 @@ public class CalculoDescontos implements Desconto {
 	private Parentesco parentesco;
 	private Fgts fgts;
 	private ValeRefeicao valeRefeicao;
+	private Double totalRefeicao;
 	
 	
 	public Double calcularDependentes(List<Dependente> dependentes) {
@@ -115,11 +116,13 @@ public class CalculoDescontos implements Desconto {
 		int diasTrabalhados = 22;
 		Double total;
 		total = valeRefeicao.CUSTO.getValorDia() * diasTrabalhados;
-		return total * valeRefeicao.CUSTO.getTaxaDesconto();
+		totalRefeicao = total * valeRefeicao.CUSTO.getTaxaDesconto();
+		total -= totalRefeicao;
+		return total;
 	}
 	
-	public Double salarioLiquido(Double salarioBruto, Double inss, Double ir, Double planoDeSaude, Double valeRefeicao) {
-		return salarioBruto - inss - ir - planoDeSaude - valeRefeicao;
+	public Double salarioLiquido(Double salarioBruto, Double inss, Double ir, Double planoDeSaude) {
+		return salarioBruto - inss - ir - planoDeSaude - totalRefeicao;
 	}
 
 }
