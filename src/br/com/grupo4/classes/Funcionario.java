@@ -21,6 +21,7 @@ public class Funcionario extends Pessoa {
 	private Double valeRefeicao = 0.;
 	private Double salarioLiquido = 0.;
 	private CalculoDescontos calculoDescontos = new CalculoDescontos();
+	private int id;
 	
 
 	public Funcionario(String nome, String cpf, LocalDate dataNasc, Double salarioBruto) {
@@ -57,7 +58,21 @@ public class Funcionario extends Pessoa {
 		this.dependentes = dependentes;
 	}
 	
+	
+	public int getId() {
+		return id;
+	}
+	
+	
+	public void setId(int id) {
+		this.id = id;
+	}
+	
+	
+
 	//Get metodos
+
+
 
 	public Double getInss() {
 		return inss = calculoDescontos.calculoINSS(salarioBruto);

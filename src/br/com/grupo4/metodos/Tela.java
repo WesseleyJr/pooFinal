@@ -11,6 +11,9 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import br.com.grupo4.classes.Funcionario;
+import br.com.grupo4.dao.DependenteDao;
+import br.com.grupo4.dao.FolhaPagamentoDao;
+import br.com.grupo4.dao.FuncionarioDao;
 
 public class Tela  implements ActionListener {
 	List<Funcionario> funcionarios = new ArrayList<>();
@@ -64,7 +67,7 @@ public class Tela  implements ActionListener {
 		JButton banco = new JButton("Gravar no banco de dados");
 		banco.setBounds(50, 100, 250, 60);
 		banco.setFont(new Font("Arial", Font.BOLD, 12));
-//		banco.addActionListener(chamarBanco());
+		banco.addActionListener(chamarBanco);
 		escolha.add(banco);
 		
 		JButton scv = new JButton("Gerar arquivo");
@@ -75,15 +78,20 @@ public class Tela  implements ActionListener {
 		
 	}
 	
-//	ActionListener chamarBanco = new ActionListener() {
-//		
-//		@Override
-//		public void actionPerformed(ActionEvent e) {
-//			gravarbanco();
-//		    System.exit(0);
-//			
-//		}
-//	};
+	ActionListener chamarBanco = new ActionListener() {
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			FolhaPagamentoDao folhaDao = new FolhaPagamentoDao();
+			FuncionarioDao funcionarioDao = new FuncionarioDao();
+			DependenteDao dependenteDao = new DependenteDao();
+			
+			funcionarioDao.inserir(funcionarios);
+			dependenteDao.inserir(funcionarios);
+			folhaDao.inserir(funcionarios);
+			
+		}
+	};
 	
 	ActionListener scval = new ActionListener() {
 		

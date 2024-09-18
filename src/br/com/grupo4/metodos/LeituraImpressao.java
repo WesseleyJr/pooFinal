@@ -22,7 +22,6 @@ import br.com.grupo4.excecoes.ExcecaoDependente;
 import br.com.grupo4.excecoes.ExcecaoPessoa;
 
 public class LeituraImpressao {
-
 	public static List<Funcionario> lerArquivo() {
 
 		List<Funcionario> funcionarios = new ArrayList<>();
@@ -86,7 +85,7 @@ public class LeituraImpressao {
 			JOptionPane.showInternalMessageDialog(null, "Arquivo não encontrado", null, JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
 		}
-
+		
 		return funcionarios;
 	}
 
